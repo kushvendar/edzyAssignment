@@ -1,3 +1,4 @@
+require('dotenv').config();  
 const express = require('express')
 const mongoose = require('mongoose')
 
@@ -10,12 +11,20 @@ const { title } = require('process');
 const app = express()
 app.use(express.json())
 
+const MONGO_URI = process.env.MONGO_URI
 
 // mongo db connection
+async function connectDB() {
+  try {
+    await mongoose.connect(MONGO_URI);
+    console.log('MongoDB connected');
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  }
+}
 
-
-
-
+connectDB();
 
 
 //  POST /seed Create initial snacks for testing. injecting data for testing
@@ -146,6 +155,6 @@ app.get('/snacks', async (req, res) => {
 app.get('/', (req, res) => res.send('Canteen ordering prototype running'));
 
 const PORT = 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 
